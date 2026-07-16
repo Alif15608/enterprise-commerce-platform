@@ -1,0 +1,30 @@
+services:
+  django:
+    build:
+      context: ./backend/django_core
+      target: builder
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend/django_core:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: "True"
+
+  fastapi:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - ./backend/fastapi_service:/app
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: ./frontend
+      target: builder
+    command: npm run dev -- --host
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"

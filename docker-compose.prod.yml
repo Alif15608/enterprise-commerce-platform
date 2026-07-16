@@ -1,0 +1,14 @@
+services:
+  django:
+    restart: unless-stopped
+    environment:
+      DJANGO_DEBUG: "False"
+
+  fastapi:
+    restart: unless-stopped
+
+  frontend:
+    restart: unless-stopped
+
+  nginx:
+    restart: unless-stopped
