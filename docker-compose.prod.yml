@@ -3,6 +3,7 @@ services:
     restart: unless-stopped
     environment:
       DJANGO_DEBUG: "False"
+      DJANGO_SETTINGS_MODULE: config.settings.production
 
   fastapi:
     restart: unless-stopped
