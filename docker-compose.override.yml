@@ -6,6 +6,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend/django_core:/app
+      - django_media:/app/media
     ports:
       - "8000:8000"
     environment:
@@ -29,3 +30,6 @@ services:
       - /app/node_modules
     ports:
       - "5173:5173"
+
+volumes:
+  django_media:

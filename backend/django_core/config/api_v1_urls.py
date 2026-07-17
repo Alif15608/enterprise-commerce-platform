@@ -3,4 +3,5 @@ from django.urls import path, include
 urlpatterns = [
     path("accounts/", include("apps.accounts.urls")),
     path("rbac/", include("apps.rbac.urls")),
+    path("catalog/", include("apps.catalog.urls")),
 ]
