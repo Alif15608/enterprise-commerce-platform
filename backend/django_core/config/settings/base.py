@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "apps.rbac",
     "django_filters",
     "apps.catalog",
+    "apps.cart",
 ]
 
 MIDDLEWARE = [
