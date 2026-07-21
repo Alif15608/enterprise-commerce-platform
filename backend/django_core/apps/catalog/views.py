@@ -17,6 +17,8 @@ from .serializers import (
     ProductDetailSerializer, ProductWriteSerializer,
 )
 
+from . import services
+
 
 class CategoryTreeView(APIView):
     permission_classes = [AllowAny]
@@ -48,11 +50,13 @@ class ProductListView(generics.ListAPIView):
 
 
 class ProductDetailView(generics.RetrieveAPIView):
-    serializer_class = ProductDetailSerializer
     permission_classes = [AllowAny]
-    queryset = services.get_product_queryset()
-    lookup_field = "slug"
 
+    def get(self, request, slug):
+        product = services.get_product_detail_cached(slug)
+        if product is None:
+            return Response({"detail": "Not found."}, status=404)
+        return Response(ProductDetailSerializer(product).data)
 
 class ProductCreateView(APIView):
     permission_classes = [IsAdminOrManager]
@@ -82,3 +86,10 @@ class ProductDeleteView(APIView):
         product = get_object_or_404(Product, slug=slug, is_deleted=False)
         services.soft_delete_product(product=product)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class PopularProductsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        products = services.get_popular_products(limit=10)
+        return Response(ProductListSerializer(products, many=True).data)
