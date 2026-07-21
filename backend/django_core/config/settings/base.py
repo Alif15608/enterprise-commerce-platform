@@ -96,6 +96,11 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    "DEFAULT_THROTTLE_RATES": {
+        "login": "5/min",
+        "register": "3/min",
+        "password_reset": "3/min",
+    },
 }
 
 SIMPLE_JWT = {
@@ -160,3 +165,5 @@ AUTHENTICATION_BACKENDS = [
     "graphql_jwt.backends.JSONWebTokenBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+REDIS_URL_RAW = config("REDIS_URL", default="redis://redis:6379/1")

@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from apps.core.cache import CacheVersion
 
 PRODUCT_LIST_VERSION_KEY = "catalog:products:version"
 CATEGORY_TREE_VERSION_KEY = "catalog:categories:version"
@@ -49,3 +50,17 @@ def make_product_list_cache_key(query_params: dict) -> str:
 def make_category_tree_cache_key() -> str:
     version = get_categories_cache_version()
     return f"categories:tree:v{version}"
+
+
+product_list_cache = CacheVersion("catalog:products")
+product_detail_cache = CacheVersion("catalog:product-detail")
+category_tree_cache = CacheVersion("catalog:categories")
+search_cache = CacheVersion("catalog:search")
+
+
+def bump_all_product_caches():
+    """Called on any product write — list, detail, AND search results
+    all depend on product data, so all three need invalidating together."""
+    product_list_cache.bump()
+    product_detail_cache.bump()
+    search_cache.bump()
