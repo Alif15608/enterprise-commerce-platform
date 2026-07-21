@@ -7,6 +7,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .tokens import email_verification_token
 from .emails import send_verification_email, send_password_reset_email
 
+from .models import Address
+
 User = get_user_model()
 
 
@@ -105,3 +107,39 @@ def confirm_password_reset(*, uid, token, new_password):
 
     user.set_password(new_password)
     user.save(update_fields=["password"])
+
+
+def list_addresses(*, user):
+    return user.addresses.all()
+
+
+def create_address(*, user, is_default=False, **fields):
+    if is_default:
+        # Only one address can be default at a time — unset any existing
+        # default before creating this one, so the invariant always holds.
+        Address.objects.filter(user=user, is_default=True).update(is_default=False)
+    return Address.objects.create(user=user, is_default=is_default, **fields)
+
+
+def update_address(*, user, address_id, is_default=None, **fields):
+    try:
+        address = Address.objects.get(pk=address_id, user=user)
+    except Address.DoesNotExist:
+        raise AuthenticationError("Address not found.")
+
+    if is_default is True:
+        Address.objects.filter(user=user, is_default=True).exclude(pk=address.pk).update(is_default=False)
+        fields["is_default"] = True
+    elif is_default is False:
+        fields["is_default"] = False
+
+    for key, value in fields.items():
+        setattr(address, key, value)
+    address.save()
+    return address
+
+
+def delete_address(*, user, address_id):
+    deleted_count, _ = Address.objects.filter(pk=address_id, user=user).delete()
+    if deleted_count == 0:
+        raise AuthenticationError("Address not found.")

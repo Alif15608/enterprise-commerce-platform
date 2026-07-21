@@ -4,6 +4,8 @@ from rest_framework import serializers
 
 from .models import User
 
+from .models import Address
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
@@ -52,3 +54,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "email", "first_name", "last_name", "created_at"]
         read_only_fields = fields
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ["id", "full_name", "phone", "line1", "line2", "city", "state", "postal_code", "country", "is_default"]
+        read_only_fields = ["id"]

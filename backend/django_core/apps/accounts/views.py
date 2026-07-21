@@ -10,6 +10,8 @@ from .serializers import (
     PasswordResetConfirmSerializer,
 )
 
+from .serializers import AddressSerializer  # add to existing import line
+
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -102,3 +104,37 @@ class PasswordResetConfirmView(APIView):
         except services.AuthenticationError as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "Password reset successfully."})
+
+
+class AddressListCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        addresses = services.list_addresses(user=request.user)
+        return Response(AddressSerializer(addresses, many=True).data)
+
+    def post(self, request):
+        serializer = AddressSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        address = services.create_address(user=request.user, **serializer.validated_data)
+        return Response(AddressSerializer(address).data, status=status.HTTP_201_CREATED)
+
+
+class AddressDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, address_id):
+        serializer = AddressSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        try:
+            address = services.update_address(user=request.user, address_id=address_id, **serializer.validated_data)
+        except services.AuthenticationError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        return Response(AddressSerializer(address).data)
+
+    def delete(self, request, address_id):
+        try:
+            services.delete_address(user=request.user, address_id=address_id)
+        except services.AuthenticationError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_204_NO_CONTENT)
