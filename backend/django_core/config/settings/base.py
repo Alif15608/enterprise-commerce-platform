@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "graphene_django",
+    "channels",
 
     # Local apps
     "apps.core",
@@ -93,9 +94,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "apps.core.pagination.StandardResultsSetPagination",
     "PAGE_SIZE": 20,
+
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.ScopedRateThrottle",
+    ],
+
     "DEFAULT_THROTTLE_RATES": {
         "login": "5/min",
         "register": "3/min",
@@ -167,3 +174,14 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 REDIS_URL_RAW = config("REDIS_URL", default="redis://redis:6379/1")
+
+ASGI_APPLICATION = "config.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [config("REDIS_CHANNEL_URL", default="redis://redis:6379/2")],
+        },
+    },
+}

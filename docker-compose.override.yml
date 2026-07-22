@@ -31,5 +31,13 @@ services:
     ports:
       - "5173:5173"
 
+  daphne:
+    volumes:
+      - ./backend/django_core:/app
+    ports:
+      - "8010:8010"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+
 volumes:
   django_media:
