@@ -67,4 +67,6 @@ class CartItem(TimeStampedModel):
 
     @property
     def line_total(self):
+        if self.product_id is None or self.quantity is None:
+            return None
         return self.product.price * self.quantity
