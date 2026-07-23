@@ -65,5 +65,37 @@ services:
       redis:
         condition: service_healthy
 
+  celery_worker:
+    build: ./backend/django_core
+    command: celery -A config worker -l info
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "celery", "-A", "config", "inspect", "ping"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_beat:
+    build: ./backend/django_core
+    command: celery -A config beat -l info
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/celerybeat.pid"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+        
 volumes:
   postgres_data:

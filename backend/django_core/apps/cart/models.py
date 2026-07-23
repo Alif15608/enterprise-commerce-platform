@@ -11,10 +11,13 @@ class Cart(TimeStampedModel):
     MERGED = "merged"
     CONVERTED = "converted"   # set to this in Phase 9 once an Order is placed from it
 
+    EXPIRED = "expired"
+
     STATUS_CHOICES = [
         (ACTIVE, "Active"),
         (MERGED, "Merged into another cart"),
         (CONVERTED, "Converted to order"),
+        (EXPIRED, "Expired (abandoned)"),
     ]
 
     user = models.ForeignKey(

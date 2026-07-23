@@ -39,5 +39,17 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.development
 
+  celery_worker:
+    volumes:
+      - ./backend/django_core:/app
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+
+  celery_beat:
+    volumes:
+      - ./backend/django_core:/app
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+
 volumes:
   django_media:

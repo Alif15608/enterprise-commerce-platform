@@ -9,6 +9,8 @@ from .emails import send_verification_email, send_password_reset_email
 
 from .models import Address
 
+from .tasks import send_verification_email_task, send_password_reset_email_task
+
 User = get_user_model()
 
 
@@ -29,9 +31,8 @@ def register_user(*, email, password, first_name="", last_name=""):
         last_name=last_name,
         is_active=False,
     )
-    send_verification_email(user)
+    send_verification_email_task.delay(user.id)   # was: send_verification_email(user)
     return user
-
 
 def verify_email(*, uid, token):
     try:
@@ -92,7 +93,7 @@ def request_password_reset(*, email):
         return  # silently no-op — same external behavior either way
 
     token = default_token_generator.make_token(user)
-    send_password_reset_email(user, token)
+    send_password_reset_email_task.delay(user.id, token)   # was: send_password_reset_email(user, token)
 
 
 def confirm_password_reset(*, uid, token, new_password):
