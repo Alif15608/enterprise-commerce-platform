@@ -17,6 +17,10 @@ import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import ProductDetail from "./pages/ProductDetail";
 
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
+
 // Placeholder pages — real implementations arrive in 14b/14c/14d.
 const Placeholder = ({ label }: { label: string }) => <div className="p-8">{label}</div>;
 
@@ -40,11 +44,14 @@ export default function App() {
               <Route path="forgot-password" element={<ForgotPassword />} />
               <Route path="reset-password" element={<ResetPassword />} />
 
+              <Route path="cart" element={<Cart />} />
+
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="dashboard" element={<Placeholder label="Dashboard (14b)" />} />
                 <Route path="cart" element={<Placeholder label="Cart (14c)" />} />
-                <Route path="checkout" element={<Placeholder label="Checkout (14c)" />} />
+                <Route path="checkout" element={<Checkout />} />
+                <Route path="order-confirmation/:orderNumber" element={<OrderConfirmation />} />
               </Route>
 
               {/* Admin Routes */}
