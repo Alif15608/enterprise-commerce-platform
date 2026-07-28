@@ -50,10 +50,15 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name", "created_at"]
+        fields = ["id", "email", "first_name", "last_name", "created_at", "roles"]
         read_only_fields = fields
+
+    def get_roles(self, obj):
+        return list(obj.user_roles.values_list("role__name", flat=True))
 
 
 class AddressSerializer(serializers.ModelSerializer):
