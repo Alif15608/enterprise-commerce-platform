@@ -4,6 +4,7 @@ export interface User {
   first_name: string;
   last_name: string;
   created_at: string;
+  roles: string[];
 }
 
 export interface AuthTokens {

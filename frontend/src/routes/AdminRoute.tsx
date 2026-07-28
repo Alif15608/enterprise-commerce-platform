@@ -5,10 +5,15 @@ import { useAuthStore } from "../store/authStore";
 // tracked explicitly so this isn't silently forgotten.
 // TODO(14b): replace with real role check once roles are exposed on User.
 export default function AdminRoute() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const { isAuthenticated, user } = useAuthStore();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  const isAdminOrManager = user?.roles.some((r) => r === "admin" || r === "manager");
+  if (!isAdminOrManager) {
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
