@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useProduct } from "../hooks/useCatalog";
+import AddToCartButton from "../components/cart/AddToCartButton";
 import Spinner from "../components/ui/Spinner";
 
 export default function ProductDetail() {
@@ -24,7 +25,7 @@ export default function ProductDetail() {
             {product.is_in_stock ? `${product.stock_quantity} in stock` : "Out of stock"}
           </p>
           <p className="mt-4 text-sm text-gray-600">{product.description}</p>
-          {/* Add-to-cart button arrives in 14c, once the cart mutations exist */}
+          <AddToCartButton productId={product.id} disabled={!product.is_in_stock} />
         </div>
       </div>
     </div>
