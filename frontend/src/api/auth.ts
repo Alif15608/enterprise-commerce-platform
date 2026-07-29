@@ -20,4 +20,7 @@ export const authApi = {
 
   confirmPasswordReset: (data: { uid: string; token: string; new_password: string }) =>
     apiClient.post("/accounts/password-reset/confirm/", data),
+
+  changePassword: (data: { old_password: string; new_password: string }) =>
+    apiClient.post("/accounts/change-password/", data),
 };

@@ -8,9 +8,9 @@ const apiClient = axios.create({
 
 // --- Request interceptor: attach access token OR guest token ---
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const { accessToken } = useAuthStore.getState();
+  const { accessToken, isAuthenticated } = useAuthStore.getState();
 
-  if (accessToken) {
+  if (isAuthenticated && accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   } else {
     const guestToken = getGuestToken();
@@ -75,7 +75,8 @@ apiClient.interceptors.response.use(
       return apiClient(originalRequest);
     } catch (refreshError) {
       useAuthStore.getState().clearAuth();
-      window.location.href = "/login";
+      refreshQueue = [];
+      // window.location.href = "/login";
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

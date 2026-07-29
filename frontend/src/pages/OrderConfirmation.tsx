@@ -21,9 +21,20 @@ export default function OrderConfirmation() {
             <span>${item.line_total}</span>
           </div>
         ))}
-        <div className="mt-3 flex justify-between font-semibold">
-          <span>Total</span>
-          <span>${order.total}</span>
+
+        <div className="mt-3 flex flex-col gap-1 text-sm">
+          <div className="flex justify-between"><span>Subtotal</span><span>${order.subtotal}</span></div>
+          {Number(order.discount_amount) > 0 && (
+            <div className="flex justify-between text-green-600">
+              <span>Discount {order.coupon_code ? `(${order.coupon_code})` : ""}</span>
+              <span>-${order.discount_amount}</span>
+            </div>
+          )}
+          <div className="flex justify-between text-gray-500"><span>Tax : </span><span>${order.tax_amount}</span></div>
+          <div className="flex justify-between text-gray-500"><span>Shipping : </span><span>${order.shipping_cost}</span></div>
+          <div className="mt-1 flex justify-between border-t pt-1 text-lg font-semibold">
+            <span>Total : </span><span>${order.total}</span>
+          </div>
         </div>
       </div>
 

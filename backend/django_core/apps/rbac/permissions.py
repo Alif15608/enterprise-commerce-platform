@@ -29,6 +29,9 @@ class IsSeller(HasRole):
 class IsCustomer(HasRole):
     required_role = "customer"
 
+class AllowAny(HasRole):
+    required_role = ["customer", "admin", "manager", "seller"]
+
 
 class IsAdminOrManager(BasePermission):
     """

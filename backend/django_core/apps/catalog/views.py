@@ -14,10 +14,14 @@ from .filters import ProductFilter
 from .cache import make_product_list_cache_key, DEFAULT_CACHE_TTL
 from .serializers import (
     CategorySerializer, ProductListSerializer,
-    ProductDetailSerializer, ProductWriteSerializer,
+    ProductDetailSerializer, ProductWriteSerializer, ProductImageSerializer, BrandSerializer
 )
 
 from . import services
+
+from rest_framework.parsers import MultiPartParser
+from .serializers import CategoryWriteSerializer, BrandWriteSerializer
+from .models import Category, Brand
 
 
 class CategoryTreeView(APIView):
@@ -48,6 +52,9 @@ class ProductListView(generics.ListAPIView):
         cache.set(cache_key, response.data, timeout=DEFAULT_CACHE_TTL)
         return response
 
+    def get_serializer_context(self):
+        return {"request": self.request}
+
 
 class ProductDetailView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
@@ -56,7 +63,7 @@ class ProductDetailView(generics.RetrieveAPIView):
         product = services.get_product_detail_cached(slug)
         if product is None:
             return Response({"detail": "Not found."}, status=404)
-        return Response(ProductDetailSerializer(product).data)
+        return Response(ProductDetailSerializer(product, context={"request": request}).data)
 
 class ProductCreateView(APIView):
     permission_classes = [IsAdminOrManager]
@@ -64,8 +71,17 @@ class ProductCreateView(APIView):
     def post(self, request):
         serializer = ProductWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        product = services.create_product(**serializer.validated_data)
-        return Response(ProductDetailSerializer(product).data, status=status.HTTP_201_CREATED)
+        data = serializer.validated_data
+
+        category = data.pop("category")
+        brand = data.pop("brand", None)
+
+        product = services.create_product(
+            category_id=category.id,
+            brand_id=brand.id if brand else None,
+            **data,
+            )
+        return Response(ProductDetailSerializer(product, context={"request": request}).data, status=status.HTTP_201_CREATED)
 
 
 class ProductUpdateView(APIView):
@@ -75,8 +91,16 @@ class ProductUpdateView(APIView):
         product = get_object_or_404(Product, slug=slug, is_deleted=False)
         serializer = ProductWriteSerializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        product = services.update_product(product=product, **serializer.validated_data)
-        return Response(ProductDetailSerializer(product).data)
+        data = serializer.validated_data
+
+        if "category" in data:
+            data["category_id"] = data.pop("category").id
+        if "brand" in data:
+            brand = data.pop("brand")
+            data["brand_id"] = brand.id if brand else None
+
+        product = services.update_product(product=product, **data)
+        return Response(ProductDetailSerializer(product, context={"request": request}).data)
 
 
 class ProductDeleteView(APIView):
@@ -93,3 +117,41 @@ class PopularProductsView(APIView):
     def get(self, request):
         products = services.get_popular_products(limit=10)
         return Response(ProductListSerializer(products, many=True).data)
+
+
+class ProductImageUploadView(APIView):
+    permission_classes = [IsAdminOrManager]
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, slug):
+        product = get_object_or_404(Product, slug=slug, is_deleted=False)
+        image_file = request.FILES.get("image")
+        if not image_file:
+            return Response({"detail": "No image file provided."}, status=status.HTTP_400_BAD_REQUEST)
+        image = services.add_product_image(product=product, image_file=image_file)
+        return Response(ProductImageSerializer(image).data, status=status.HTTP_201_CREATED)
+
+
+class CategoryCreateView(APIView):
+    permission_classes = [IsAdminOrManager]
+
+    def post(self, request):
+        serializer = CategoryWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        category = services.create_category(**serializer.validated_data)
+        return Response(CategorySerializer(category).data, status=status.HTTP_201_CREATED)
+
+
+class BrandCreateView(APIView):
+    permission_classes = [IsAdminOrManager]
+
+    def post(self, request):
+        serializer = BrandWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        brand = services.create_brand(**serializer.validated_data)
+        return Response(BrandSerializer(brand).data, status=status.HTTP_201_CREATED)
+
+class BrandListView(generics.ListAPIView):
+    serializer_class = BrandSerializer
+    permission_classes = [AllowAny]
+    queryset = Brand.objects.filter(is_active=True)

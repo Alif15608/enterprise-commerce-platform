@@ -9,5 +9,8 @@ urlpatterns = [
     path("products/<slug:slug>/", views.ProductDetailView.as_view(), name="product-detail"),
     path("products/<slug:slug>/update/", views.ProductUpdateView.as_view(), name="product-update"),
     path("products/<slug:slug>/delete/", views.ProductDeleteView.as_view(), name="product-delete"),
-    
+    path("products/<slug:slug>/images/", views.ProductImageUploadView.as_view(), name="product-image-upload"),
+    path("categories/create/", views.CategoryCreateView.as_view(), name="category-create"),
+    path("brands/create/", views.BrandCreateView.as_view(), name="brand-create"),
+    path("brands/", views.BrandListView.as_view(), name="brand-list"),
 ]
