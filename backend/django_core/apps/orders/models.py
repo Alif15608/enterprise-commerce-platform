@@ -6,6 +6,30 @@ from apps.core.models import TimeStampedModel
 from apps.catalog.models import Product
 from apps.accounts.models import Address
 
+class Coupon(TimeStampedModel):
+    PERCENTAGE = "percentage"
+    FLAT = "flat"
+    DISCOUNT_TYPE_CHOICES = [(PERCENTAGE, "Percentage"), (FLAT, "Flat amount")]
+
+    code = models.CharField(max_length=32, unique=True)
+    discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPE_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # e.g. 10.00 = 10% or $10
+
+    is_active = models.BooleanField(default=True)
+    valid_from = models.DateTimeField()
+    valid_until = models.DateTimeField()
+
+    max_uses = models.PositiveIntegerField(null=True, blank=True)  # null = unlimited
+    times_used = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = "coupons"
+        constraints = [
+            models.CheckConstraint(check=models.Q(amount__gt=0), name="coupon_amount_positive"),
+        ]
+
+    def __str__(self):
+        return self.code
 
 class Order(TimeStampedModel):
     PENDING = "pending"
@@ -38,6 +62,8 @@ class Order(TimeStampedModel):
     shipping_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=12, decimal_places=2)
 
+    coupon = models.ForeignKey(Coupon, null=True, blank=True, on_delete=models.SET_NULL, related_name="orders")
+
     class Meta:
         db_table = "orders"
         indexes = [
@@ -66,6 +92,7 @@ class OrderItem(TimeStampedModel):
     class Meta:
         db_table = "order_items"
         indexes = [models.Index(fields=["order"])]
+
 
     @property
     def line_total(self):

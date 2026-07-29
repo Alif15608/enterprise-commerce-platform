@@ -98,3 +98,12 @@ export function useConfirmPasswordReset() {
     onError: (err: any) => toast.error(err.response?.data?.detail || "Reset failed."),
   });
 }
+
+// hooks/useAuth.ts — add:
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: authApi.changePassword,
+    onSuccess: () => toast.success("Password changed successfully."),
+    onError: (err: any) => toast.error(err.response?.data?.detail || "Failed to change password."),
+  });
+}

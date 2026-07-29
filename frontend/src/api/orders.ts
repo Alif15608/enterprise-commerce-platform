@@ -1,8 +1,11 @@
 import apiClient from "./client";
 
 export const ordersApi = {
-  checkout: (shipping_address_id: number) =>
-    apiClient.post("/orders/checkout/", { shipping_address_id }).then((r) => r.data),
+  checkout: (data: { shipping_address_id: number; coupon_code?: string }) =>
+    apiClient.post("/orders/checkout/", data).then((r) => r.data),
+
+  validateCoupon: (code: string, subtotal: number) =>
+    apiClient.post("/orders/coupons/validate/", { code, subtotal }).then((r) => r.data),
 
   getOrder: (orderNumber: string) =>
     apiClient.get(`/orders/${orderNumber}/`).then((r) => r.data),

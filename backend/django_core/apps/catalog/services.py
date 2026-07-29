@@ -12,7 +12,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from .cache import product_detail_cache, search_cache, bump_all_product_caches, DEFAULT_CACHE_TTL
-from .models import Product
+from .models import Product, ProductImage, Category, Brand
 
 
 def get_category_tree():
@@ -131,3 +131,16 @@ def get_popular_products(limit=10):
     # Preserve Redis's popularity ordering — a plain .filter(id__in=...)
     # does NOT guarantee result order matches the input list.
     return [products[pid] for pid in product_ids if pid in products]
+
+def add_product_image(*, product, image_file):
+    return ProductImage.objects.create(product=product, image=image_file)
+
+
+def create_category(*, name, parent_id=None):
+    category = Category.objects.create(name=name, parent_id=parent_id)
+    bump_categories_cache_version()
+    return category
+
+
+def create_brand(*, name):
+    return Brand.objects.create(name=name)

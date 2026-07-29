@@ -1,10 +1,21 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useCart } from "../hooks/useCart";
+import apiClient from "../api/client";
 import CartItemRow from "../components/cart/CartItemRow";
 import Spinner from "../components/ui/Spinner";
 
 export default function Cart() {
   const { data: cart, isLoading } = useCart();
+
+  const { data: estimate } = useQuery({
+    queryKey: ["order-estimate", cart?.subtotal],
+    queryFn: () =>
+      apiClient
+        .get("/orders/estimate/", { params: { subtotal: cart?.subtotal } })
+        .then((r) => r.data),
+    enabled: !!cart?.subtotal,
+  });
 
   if (isLoading) return <Spinner />;
 
@@ -23,8 +34,17 @@ export default function Cart() {
       {cart.items.map((item: any) => (
         <CartItemRow key={item.id} item={item} />
       ))}
-      <div className="mt-6 flex items-center justify-between">
-        <span className="text-lg font-semibold">Subtotal: ${cart.subtotal}</span>
+      <div className="mt-6 flex flex-col gap-1 text-sm">
+        <div className="flex justify-between"><span>Subtotal</span><span>${cart.subtotal}</span></div>
+        {estimate && (
+          <>
+            <div className="flex justify-between text-gray-500"><span>Tax (estimated)</span><span>${estimate.tax}</span></div>
+            <div className="flex justify-between text-gray-500"><span>Shipping (estimated)</span><span>${estimate.shipping}</span></div>
+            <div className="flex justify-between text-lg font-semibold"><span>Estimated Total</span><span>${estimate.total}</span></div>
+          </>
+        )}
+      </div>
+      <div className="mt-6 flex justify-end">
         <Link to="/checkout" className="rounded bg-black px-6 py-3 text-white">
           Proceed to Checkout
         </Link>

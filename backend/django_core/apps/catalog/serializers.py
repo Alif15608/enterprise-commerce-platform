@@ -36,7 +36,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["id", "name", "slug", "price", "is_in_stock", "primary_image", "category", "brand"]
+        fields = ["id", "name", "slug", "sku", "price", "stock_quantity", "is_in_stock", "primary_image", "category", "brand"]
 
     def get_primary_image(self, obj):
         images = getattr(obj, "_prefetched_images", None)
@@ -68,3 +68,14 @@ class ProductWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ["name", "sku", "description", "price", "stock_quantity", "category", "brand", "is_active"]
+
+class CategoryWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["name", "parent"]
+
+
+class BrandWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ["name"]
