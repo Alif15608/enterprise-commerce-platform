@@ -9,4 +9,6 @@ urlpatterns = [
     path("<uuid:order_number>/status/", views.UpdateOrderStatusView.as_view(), name="order-status-update"),
     path("estimate/", views.EstimateView.as_view(), name="order-estimate"),
     path("coupons/validate/", views.CouponValidateView.as_view(), name="coupon-validate"),
+    path("coupons/", views.CouponListCreateView.as_view(), name="coupon-list-create"),
+    path("coupons/<int:pk>/", views.CouponDetailView.as_view(), name="coupon-detail"),
 ]

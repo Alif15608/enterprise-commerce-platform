@@ -6,6 +6,7 @@ const links = [
   { to: "/admin/brands", label: "Brands" },
   { to: "/admin/orders", label: "Orders" },
   { to: "/admin/inventory", label: "Inventory" },
+  { to: "/admin/coupons", label: "Coupons"  },
 ];
 
 export default function AdminSidebar() {

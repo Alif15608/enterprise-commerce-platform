@@ -37,6 +37,8 @@ import AdminInventory from "./pages/admin/AdminInventory";
 import ChangePassword from "./pages/dashboard/ChangePassword";
 import DashboardOverview from "./pages/dashboard/DashboardOverview";
 
+import AdminCoupons from "./pages/admin/AdminCoupons";
+
 // Placeholder pages — real implementations arrive in 14b/14c/14d.
 //const Placeholder = ({ label }: { label: string }) => <div className="p-8">{label}</div>;
 
@@ -87,6 +89,7 @@ export default function App() {
                   <Route path="brands" element={<AdminBrands />} />
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="inventory" element={<AdminInventory />} />
+                  <Route path="coupons" element={<AdminCoupons />} />
                 </Route>
               </Route>
 
