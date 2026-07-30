@@ -1,3 +1,4 @@
+# ruff: noqa: F405
 from .base import *  # noqa: F401,F403
 
 DEBUG = True
