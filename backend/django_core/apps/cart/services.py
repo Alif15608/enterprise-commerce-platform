@@ -1,8 +1,9 @@
 import uuid
+
 from django.db import transaction
-from django.core.exceptions import ValidationError
 
 from apps.catalog.models import Product
+
 from .models import Cart, CartItem
 
 

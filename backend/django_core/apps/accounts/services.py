@@ -1,15 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_decode
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .tokens import email_verification_token
-from .emails import send_verification_email, send_password_reset_email
-
 from .models import Address
-
-from .tasks import send_verification_email_task, send_password_reset_email_task
+from .tasks import send_password_reset_email_task, send_verification_email_task
+from .tokens import email_verification_token
 
 User = get_user_model()
 

@@ -1,4 +1,5 @@
 from django.core.cache import cache
+
 from apps.core.cache import CacheVersion
 
 PRODUCT_LIST_VERSION_KEY = "catalog:products:version"

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Order, OrderItem
-from .models import Coupon
+
+from .models import Coupon, Order, OrderItem
 
 
 class OrderItemInline(admin.TabularInline):

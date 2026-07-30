@@ -1,27 +1,29 @@
-from rest_framework import status, generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-from rest_framework.filters import SearchFilter, OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, status
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.rbac.permissions import IsAdminOrManager
+
 from . import services
-from .models import Product
+from .cache import DEFAULT_CACHE_TTL, make_product_list_cache_key
 from .filters import ProductFilter
-from .cache import make_product_list_cache_key, DEFAULT_CACHE_TTL
+from .models import Brand, Product
 from .serializers import (
-    CategorySerializer, ProductListSerializer,
-    ProductDetailSerializer, ProductWriteSerializer, ProductImageSerializer, BrandSerializer
+    BrandSerializer,
+    BrandWriteSerializer,
+    CategorySerializer,
+    CategoryWriteSerializer,
+    ProductDetailSerializer,
+    ProductImageSerializer,
+    ProductListSerializer,
+    ProductWriteSerializer,
 )
-
-from . import services
-
-from rest_framework.parsers import MultiPartParser
-from .serializers import CategoryWriteSerializer, BrandWriteSerializer
-from .models import Category, Brand
 
 
 class CategoryTreeView(APIView):
@@ -110,7 +112,7 @@ class ProductDeleteView(APIView):
         product = get_object_or_404(Product, slug=slug, is_deleted=False)
         services.soft_delete_product(product=product)
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 class PopularProductsView(APIView):
     permission_classes = [AllowAny]
 

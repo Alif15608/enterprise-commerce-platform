@@ -1,17 +1,22 @@
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
-from apps.rbac.permissions import IsAdminOrManager, AllowAny
-from apps.cart.services import get_or_create_active_cart
-from . import services
-from .serializers import OrderSerializer, CheckoutSerializer, CouponValidateSerializer, CouponSerializer
-
-from .pricing import calculate_tax, calculate_shipping
 from decimal import Decimal
 
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from apps.cart.services import get_or_create_active_cart
+from apps.rbac.permissions import AllowAny, IsAdminOrManager
+
+from . import services
 from .models import Coupon
+from .pricing import calculate_shipping, calculate_tax
+from .serializers import (
+    CheckoutSerializer,
+    CouponSerializer,
+    CouponValidateSerializer,
+    OrderSerializer,
+)
 
 
 class CheckoutView(APIView):

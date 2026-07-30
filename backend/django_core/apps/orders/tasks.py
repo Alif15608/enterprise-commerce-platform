@@ -3,8 +3,8 @@ from datetime import date, timedelta
 from decimal import Decimal
 
 from celery import shared_task
-from django.core.mail import EmailMessage
 from django.conf import settings
+from django.core.mail import EmailMessage
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 

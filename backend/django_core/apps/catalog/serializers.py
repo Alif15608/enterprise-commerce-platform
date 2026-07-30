@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Brand, Product, ProductImage
+from .models import Brand, Category, Product, ProductImage
 
 
 class CategorySerializer(serializers.ModelSerializer):
