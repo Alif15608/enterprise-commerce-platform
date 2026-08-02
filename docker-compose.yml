@@ -83,7 +83,7 @@ services:
 
   celery_beat:
     build: ./backend/django_core
-    command: celery -A config beat -l info
+    command: celery -A config beat -l info --pidfile=/tmp/celerybeat.pid
     env_file: .env
     healthcheck:
       test: ["CMD", "test", "-f", "/tmp/celerybeat.pid"]
