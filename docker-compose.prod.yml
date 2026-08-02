@@ -1,15 +1,18 @@
 services:
+  nginx:
+    restart: unless-stopped
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
   django:
     restart: unless-stopped
     environment:
       DJANGO_DEBUG: "False"
       DJANGO_SETTINGS_MODULE: config.settings.production
-
   fastapi:
     restart: unless-stopped
-
-  frontend:
+  daphne:
     restart: unless-stopped
-
-  nginx:
+  celery_worker:
+    restart: unless-stopped
+  celery_beat:
     restart: unless-stopped
