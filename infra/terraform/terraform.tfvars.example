@@ -1,0 +1,9 @@
+vm_host     = "203.0.113.10"
+vm_user     = "ubuntu"
+vm_password = "REPLACE_ME"
+
+# Once you've set up SSH key auth (recommended), switch to this instead
+# and remove vm_password entirely:
+# vm_ssh_private_key_path = "~/.ssh/mir_cloud_deploy_key"
+
+app_directory = "/opt/enterprise-commerce-platform"

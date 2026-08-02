@@ -1,5 +1,9 @@
 # Enterprise Commerce Platform
 
+![Backend CI](https://github.com/Alif15608/enterprise-commerce-platform/actions/workflows/backend.yml/badge.svg)
+![Frontend CI](https://github.com/Alif15608/enterprise-commerce-platform/actions/workflows/frontend.yml/badge.svg)
+![Docker Build](https://github.com/Alif15608/enterprise-commerce-platform/actions/workflows/docker-build.yml/badge.svg)
+
 A production-grade, full-stack e-commerce platform built to demonstrate
 clean architecture, scalable backend design, and modern DevOps practices.
 
