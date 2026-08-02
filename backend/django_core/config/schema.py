@@ -1,5 +1,4 @@
 import graphene
-
 from apps.cart.schema import CartMutation, CartQuery
 from apps.catalog.schema import CatalogQuery
 
