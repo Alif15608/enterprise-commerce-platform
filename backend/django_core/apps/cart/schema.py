@@ -1,8 +1,8 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-from .models import Cart, CartItem
 from . import services
+from .models import Cart, CartItem
 
 
 class CartItemType(DjangoObjectType):

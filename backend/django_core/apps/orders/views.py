@@ -1,15 +1,22 @@
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
-from apps.rbac.permissions import IsAdminOrManager, AllowAny
-from apps.cart.services import get_or_create_active_cart
-from . import services
-from .serializers import OrderSerializer, CheckoutSerializer, CouponValidateSerializer
-
-from .pricing import calculate_tax, calculate_shipping
 from decimal import Decimal
+
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from apps.cart.services import get_or_create_active_cart
+from apps.rbac.permissions import AllowAny, IsAdminOrManager
+
+from . import services
+from .models import Coupon
+from .pricing import calculate_shipping, calculate_tax
+from .serializers import (
+    CheckoutSerializer,
+    CouponSerializer,
+    CouponValidateSerializer,
+    OrderSerializer,
+)
 
 
 class CheckoutView(APIView):
@@ -88,3 +95,25 @@ class CouponValidateView(APIView):
         except services.CouponError as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"code": coupon.code, "discount": discount})
+
+class CouponListCreateView(APIView):
+    permission_classes = [IsAdminOrManager]
+
+    def get(self, request):
+        coupons = Coupon.objects.all().order_by("-created_at")
+        return Response(CouponSerializer(coupons, many=True).data)
+
+    def post(self, request):
+        serializer = CouponSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        coupon = Coupon.objects.create(**serializer.validated_data)
+        return Response(CouponSerializer(coupon).data, status=status.HTTP_201_CREATED)
+
+class CouponDetailView(APIView):
+    permission_classes = [IsAdminOrManager]
+
+    def delete(self, request, pk):
+        deleted_count, _ = Coupon.objects.filter(pk=pk).delete()
+        if deleted_count == 0:
+            return Response({"detail": "Coupon not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_204_NO_CONTENT)

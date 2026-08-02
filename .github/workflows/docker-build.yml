@@ -1,0 +1,30 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [django, fastapi, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine build context
+        id: context
+        run: |
+          case "${{ matrix.service }}" in
+            django) echo "path=backend/django_core" >> "$GITHUB_OUTPUT" ;;
+            fastapi) echo "path=backend/fastapi_service" >> "$GITHUB_OUTPUT" ;;
+            frontend) echo "path=frontend" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: Build image (no push — validation only)
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ steps.context.outputs.path }}
+          push: false
+          tags: ${{ matrix.service }}:ci-check

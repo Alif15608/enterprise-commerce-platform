@@ -1,10 +1,12 @@
 import uuid
+
 from django.conf import settings
 from django.db import models
 
-from apps.core.models import TimeStampedModel
-from apps.catalog.models import Product
 from apps.accounts.models import Address
+from apps.catalog.models import Product
+from apps.core.models import TimeStampedModel
+
 
 class Coupon(TimeStampedModel):
     PERCENTAGE = "percentage"

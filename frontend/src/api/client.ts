@@ -8,9 +8,9 @@ const apiClient = axios.create({
 
 // --- Request interceptor: attach access token OR guest token ---
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const { accessToken, isAuthenticated } = useAuthStore.getState();
+  const { accessToken } = useAuthStore.getState();
 
-  if (isAuthenticated && accessToken) {
+  if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   } else {
     const guestToken = getGuestToken();

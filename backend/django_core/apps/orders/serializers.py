@@ -1,6 +1,7 @@
 # apps/orders/serializers.py
 from rest_framework import serializers
-from .models import Order, OrderItem
+
+from .models import Coupon, Order, OrderItem
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -22,7 +23,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             "id", "order_number", "status", "payment_status",
             "subtotal", "discount_amount", "tax_amount", "shipping_cost", "total",
-            "shipping_address", "items", "customer_email", "created_at", "coupon_code", 
+            "shipping_address", "items", "customer_email", "created_at", "coupon_code",
         ]
         read_only_fields = fields
 
@@ -35,3 +36,9 @@ class CheckoutSerializer(serializers.Serializer):
 class CouponValidateSerializer(serializers.Serializer):
     code = serializers.CharField()
     subtotal = serializers.DecimalField(max_digits=12, decimal_places=2)
+
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = ["id", "code", "discount_type", "amount", "is_active", "valid_from", "valid_until", "max_uses", "times_used"]
+        read_only_fields = ["id", "times_used"]

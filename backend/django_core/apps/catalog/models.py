@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 
-from apps.core.models import TimeStampedModel, SoftDeleteModel
+from apps.core.models import SoftDeleteModel, TimeStampedModel
 
 
 class Category(TimeStampedModel):

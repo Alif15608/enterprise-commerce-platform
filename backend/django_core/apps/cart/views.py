@@ -1,11 +1,10 @@
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from . import services
-from .models import Cart
-from .serializers import CartSerializer, AddItemSerializer, UpdateItemSerializer
+from .serializers import AddItemSerializer, CartSerializer, UpdateItemSerializer
 
 
 def _resolve_cart(request):

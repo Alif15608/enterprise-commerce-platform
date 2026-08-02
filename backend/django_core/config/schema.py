@@ -1,7 +1,6 @@
 import graphene
-
+from apps.cart.schema import CartMutation, CartQuery
 from apps.catalog.schema import CatalogQuery
-from apps.cart.schema import CartQuery, CartMutation
 
 
 class Query(CatalogQuery, CartQuery, graphene.ObjectType):

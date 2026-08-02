@@ -54,3 +54,15 @@ export function useCreateBrand() {
     onSuccess: () => toast.success("Brand created."),
   });
 }
+
+// frontend/src/hooks/useAdminProducts.ts — add
+export function useDeleteProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (slug: string) => adminApi.deleteProduct(slug),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product deleted.");
+    },
+  });
+}

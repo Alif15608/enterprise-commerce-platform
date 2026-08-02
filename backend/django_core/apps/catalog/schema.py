@@ -2,9 +2,9 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
-from .models import Category, Product, Brand
-from .filters import ProductFilter
 from . import services
+from .filters import ProductFilter
+from .models import Brand, Category, Product
 
 
 class CategoryType(DjangoObjectType):

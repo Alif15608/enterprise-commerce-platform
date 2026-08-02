@@ -1,7 +1,7 @@
-from django.core.mail import send_mail
 from django.conf import settings
-from django.utils.http import urlsafe_base64_encode
+from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from .tokens import email_verification_token
 

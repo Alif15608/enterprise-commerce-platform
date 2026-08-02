@@ -1,18 +1,17 @@
-from django.core.cache import cache
-from django.db.models import Prefetch
-
-from .models import Category, Product, ProductImage
-from .cache import (
-    make_product_list_cache_key, make_category_tree_cache_key,
-    bump_products_cache_version, bump_categories_cache_version, DEFAULT_CACHE_TTL,
-)
-
 import redis
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Prefetch
 
-from .cache import product_detail_cache, search_cache, bump_all_product_caches, DEFAULT_CACHE_TTL
-from .models import Product, ProductImage, Category, Brand
+from .cache import (
+    DEFAULT_CACHE_TTL,
+    bump_categories_cache_version,
+    bump_products_cache_version,
+    make_category_tree_cache_key,
+    product_detail_cache,
+    search_cache,
+)
+from .models import Brand, Category, Product, ProductImage
 
 
 def get_category_tree():

@@ -1,16 +1,16 @@
-from django.db import transaction
-
-from apps.catalog.models import Product
-from apps.cart.models import Cart
-from apps.accounts.models import Address
-from .models import Order, OrderItem
-from .payment import get_payment_gateway
-from .pricing import calculate_tax, calculate_shipping
-
-from django.utils import timezone
-from django.db.models import F
-from .models import Coupon
 from decimal import Decimal
+
+from django.db import transaction
+from django.db.models import F
+from django.utils import timezone
+
+from apps.accounts.models import Address
+from apps.cart.models import Cart
+from apps.catalog.models import Product
+
+from .models import Coupon, Order, OrderItem
+from .payment import get_payment_gateway
+from .pricing import calculate_shipping, calculate_tax
 
 
 class CheckoutError(Exception):
